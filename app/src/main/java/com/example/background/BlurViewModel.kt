@@ -19,18 +19,11 @@ package com.example.background
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import android.net.Uri
+import androidx.work.*
 
 import com.example.background.workers.BlurWorker
 import com.example.background.workers.CleanupWorker
 import com.example.background.workers.SaveImageToFileWorker
-
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.WorkStatus
 
 class BlurViewModel : ViewModel() {
 
@@ -52,7 +45,7 @@ class BlurViewModel : ViewModel() {
     internal fun applyBlur(blurLevel: Int) {
 
         // Add WorkRequest to Cleanup temporary images
-        var continuation = workManager
+        var continuation: WorkContinuation = workManager
                 .beginUniqueWork(
                         IMAGE_MANIPULATION_WORK_NAME,
                         ExistingWorkPolicy.REPLACE,
@@ -76,10 +69,11 @@ class BlurViewModel : ViewModel() {
         // Create charging constraint
         val constraints = Constraints.Builder()
                 .setRequiresCharging(true)
+                .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
         // Add WorkRequest to save the image to the filesystem
-        val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
+        val save: OneTimeWorkRequest = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
                 .setConstraints(constraints)
                 .addTag(TAG_OUTPUT)
                 .build()

@@ -23,32 +23,36 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
-
-import java.util.Arrays
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import java.util.*
 
 class SelectImageActivity : AppCompatActivity() {
 
-    private val TAG by lazy { SelectImageActivity::class.java.simpleName }
+    companion object {
 
-    private val REQUEST_CODE_IMAGE = 100
-    private val REQUEST_CODE_PERMISSIONS = 101
+        private val TAG by lazy { SelectImageActivity::class.java.simpleName }
 
-    private val KEY_PERMISSIONS_REQUEST_COUNT = "KEY_PERMISSIONS_REQUEST_COUNT"
-    private val MAX_NUMBER_REQUEST_PERMISSIONS = 2
+        private val REQUEST_CODE_IMAGE = 100
+        private val REQUEST_CODE_PERMISSIONS = 101
 
-    private val permissions = Arrays.asList(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
+        private val KEY_PERMISSIONS_REQUEST_COUNT = "KEY_PERMISSIONS_REQUEST_COUNT"
+        private val MAX_NUMBER_REQUEST_PERMISSIONS = 2
 
-    private var permissionRequestCount: Int = 0
+        private val permissions = Arrays.asList(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+
+        private var permissionRequestCount: Int = 0
+    }
+
     private lateinit var selectImageButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,9 +123,9 @@ class SelectImageActivity : AppCompatActivity() {
                     PackageManager.PERMISSION_GRANTED
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -153,8 +157,10 @@ class SelectImageActivity : AppCompatActivity() {
             return
         }
 
-        val filterIntent = Intent(this, BlurActivity::class.java)
+        /*val filterIntent = Intent(this, BlurActivity::class.java)
         filterIntent.putExtra(KEY_IMAGE_URI, imageUri.toString())
-        startActivity(filterIntent)
+        startActivity(filterIntent)*/
+
+        startActivity(Intent(this, BlurActivity::class.java).apply { putExtra(KEY_IMAGE_URI, imageUri.toString()) })
     }
 }
